@@ -9,6 +9,7 @@ var taskFormHandler = function (event) {
     // check if input values are empty strings
     if (!taskNameInput || !taskTypeInput) {
         alert("You need to fill out the task form!");
+        // exits out of taskFormHandler()
         return false;
     } 
 
