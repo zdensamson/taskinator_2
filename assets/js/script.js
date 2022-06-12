@@ -1,8 +1,11 @@
+// START ON 4.3.8
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var pageContentEl = document.querySelector("#page-content")
 
 var taskIdCounter = 0;
 
+// creates task
 var taskFormHandler = function (event) {
     event.preventDefault();
     var taskNameInput = document.querySelector("input[name='task-name']").value;
@@ -27,6 +30,7 @@ var taskFormHandler = function (event) {
     createTaskEl(taskDataObj);
 };
 
+// calls createTaskActions() to complete a task element, and apends to <main>
 var createTaskEl = function(taskDataObj) {
     // create list item
     var listItemEl = document.createElement("li");
@@ -98,6 +102,24 @@ var createTaskActions = function(taskId) {
     
     // returns a DOM element that can be assigned to a var within createTaskEl()
     return actionContainerEl;
+};
+
+var taskButtonHandler = function(event){
+    console.log(event.target);
+
+    if (event.target.matches(".delete-btn")){
+        // get the element's data-task-id
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    } 
+};
+
+var deleteTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId +"']");
+
+    console.log(taskSelected);
+    taskSelected.remove();
 }
 
 formEl.addEventListener("submit", taskFormHandler);
+pageContentEl.addEventListener("click", taskButtonHandler);
