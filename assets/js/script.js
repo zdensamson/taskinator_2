@@ -1,4 +1,4 @@
-// START ON 4.3.8
+// START ON 4.3.9
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content")
@@ -105,20 +105,49 @@ var createTaskActions = function(taskId) {
 };
 
 var taskButtonHandler = function(event){
-    console.log(event.target);
+    //console.log(event.target);
+    // get target element from event
+    var targetEl = event.target;
 
-    if (event.target.matches(".delete-btn")){
+    if (targetEl.matches(".delete-btn")){
         // get the element's data-task-id
         var taskId = event.target.getAttribute("data-task-id");
         deleteTask(taskId);
     } 
+
+    if (targetEl.matches(".edit-btn")){
+        console.log(event.target);
+        var taskId = event.target.getAttribute("data-task-id");
+        editTask(taskId);
+    }
 };
 
 var deleteTask = function(taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId +"']");
 
-    console.log(taskSelected);
+    //console.log(taskSelected);
     taskSelected.remove();
+}
+
+var editTask = function(taskId) {
+    console.log("editing task #" + taskId);
+
+    // get task list item element
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId +"']");
+
+    // get content from the task NAME & TYPE
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    
+    // set the topmost form to display the NAME & TYPE of task selected for editing
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+
+    // change the "ADD TASK" btn to display "SAVE TASK"
+    document.querySelector("#save-task").textContent= "SAVE TASK"
+
+    // take the #task-form FORM and assign it the data-task-id data attr of the li we are currently editing
+    formEl.setAttribute("data-task-id", taskId);
 }
 
 formEl.addEventListener("submit", taskFormHandler);
