@@ -19,15 +19,26 @@ var taskFormHandler = function (event) {
     } 
 
     formEl.reset();
-    
-    // package up data as an object
-    var taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput
-    };
+
+    // returns TRUE or FALSE if the formEl does or doesn't have a "data-task-id" attribute
+    var isEdit = formEl.hasAttribute("data-task-id");
     
     // send it as an argument to createTaskEl
-    createTaskEl(taskDataObj);
+    // has data attribute, so get task id and call function to complete edit process
+    if (isEdit){
+        var taskId = formEl.getAttribute("data-task-id");
+        // new function yet to be defined
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+    // no data attribute, so create object as normal and pass to createTaskEl function
+    else {
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+
+        createTaskEl(taskDataObj);
+    }
 };
 
 // calls createTaskActions() to complete a task element, and apends to <main>
@@ -50,6 +61,7 @@ var createTaskEl = function(taskDataObj) {
     listItemEl.appendChild(taskInfoEl);
 
     // calls createTaskActions() and passes in the current ID to the buttons
+    // creates a <div> holding two buttons and appends it to dynamically generated <li> (listItemEl)
     var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
 
@@ -88,6 +100,7 @@ var createTaskActions = function(taskId) {
     statusSelectEl.setAttribute("data-task-id", taskId)
 
     var statusChoices = ["To Do", "In Progress", "Completed"];
+    // 0 todo 1 ... 1 in progress 2 ... 2 completed 3... 3 = statusChoices.length --> STOP
     for (var i = 0; i < statusChoices.length; i++) {
         //create option element
         var statusOptionEl = document.createElement("option");
@@ -116,13 +129,14 @@ var taskButtonHandler = function(event){
     } 
 
     if (targetEl.matches(".edit-btn")){
-        console.log(event.target);
+        //console.log(event.target);
         var taskId = event.target.getAttribute("data-task-id");
         editTask(taskId);
     }
 };
 
 var deleteTask = function(taskId) {
+    // why do we use querySelector in this way?
     var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId +"']");
 
     //console.log(taskSelected);
