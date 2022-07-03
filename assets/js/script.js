@@ -1,4 +1,4 @@
-// START ON 4.3.9
+// START ON 4.3.10
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content")
@@ -23,6 +23,8 @@ var taskFormHandler = function (event) {
     // returns TRUE or FALSE if the formEl does or doesn't have a "data-task-id" attribute
     var isEdit = formEl.hasAttribute("data-task-id");
     
+    // all code below is taking the "submit" event and doing one of two things based on our hasAttribute conditional
+
     // send it as an argument to createTaskEl
     // has data attribute, so get task id and call function to complete edit process
     if (isEdit){
@@ -40,6 +42,21 @@ var taskFormHandler = function (event) {
         createTaskEl(taskDataObj);
     }
 };
+
+// submitting an edited task back to the kan ban board
+var completeEditTask = function(taskName, taskType, taskId){
+    // find the matching task list item <li> element in the kan ban board
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    // set new values -- pass on the NAME & TYPE from the form in "edit mode" to the existing <li> task
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated");
+
+    // reset the form to take in new tasks from user
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+}
 
 // calls createTaskActions() to complete a task element, and apends to <main>
 var createTaskEl = function(taskDataObj) {
