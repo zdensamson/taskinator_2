@@ -1,14 +1,23 @@
 // START ON 4.3.10
-var formEl = document.querySelector("#task-form");
-var tasksToDoEl = document.querySelector("#tasks-to-do");
-var pageContentEl = document.querySelector("#page-content")
 
+// task name text field & task type drop down
+var formEl = document.querySelector("#task-form");
+// <ul> element that will hold all newly generated tasks
+var tasksToDoEl = document.querySelector("#tasks-to-do");
+// <main> element holding three kanban <section> elements
+var pageContentEl = document.querySelector("#page-content")
+// global variable to be added (and incremented up) every time to a newly created task
 var taskIdCounter = 0;
 
-// creates task
+// creates task AND edits task
+// a user created task will NOT have a data-attribute (data-) of data-task-id (this is assigned in createTaskEl() ), and thus a click of the <btn> in formEl will pass this to createTaskEl()
+// a pre-existing task will have a data-task-id and thus will pass the edited task on to the completeEditTask() function
 var taskFormHandler = function (event) {
+    // prevents a page refresh
     event.preventDefault();
+    // look for an <input> element with the "name" property of "task-name" --> grab its value --> assign it to the local variable taskNameInput
     var taskNameInput = document.querySelector("input[name='task-name']").value;
+    // look for a <select> element with the "name" property of "task-type" --> grab its value --> assign it to the local variable taskTypeInput
     var taskTypeInput = document.querySelector("select[name= 'task-type']").value;
 
     // check if input values are empty strings
@@ -18,6 +27,7 @@ var taskFormHandler = function (event) {
         return false;
     } 
 
+    // return to the inital values of the <input> & <select> elements within the formEl as designated by the HTML
     formEl.reset();
 
     // returns TRUE or FALSE if the formEl does or doesn't have a "data-task-id" attribute
@@ -134,6 +144,7 @@ var createTaskActions = function(taskId) {
     return actionContainerEl;
 };
 
+// a "controller" of sorts that is specifcally listening/looking for a "click" on ANY <btn> element with the CLASS .delete-btn OR .edit-btn
 var taskButtonHandler = function(event){
     //console.log(event.target);
     // get target element from event
@@ -181,5 +192,6 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 }
 
+// triggers task creation
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
