@@ -8,6 +8,11 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content")
 // global variable to be added (and incremented up) every time to a newly created task
 var taskIdCounter = 0;
+// <ul> element holding all "tasks in progress"
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+// <ul> element holding all "tasks completed"
+var tasksCompletedEl = document.querySelector("#tasks-completed");
+
 
 // creates task AND edits task
 // a user created task will NOT have a data-attribute (data-) of data-task-id (this is assigned in createTaskEl() ), and thus a click of the <btn> in formEl will pass this to createTaskEl()
@@ -192,6 +197,31 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 }
 
-// triggers task creation
+var taskStatusChangeHandler = function(event) {
+    // get the task item's id
+    var taskId = event.target.getAttribute("data-task-id");
+    
+    // get the currently selected option's value and convert to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    // find the parent task item element "<li>" based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // checks the statusValue "event.target.value" of the "CHANGED" option from any <select> tag and moves the previously created <li> from one <ul> element to the next
+    if (statusValue == "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+    }
+    else if (statusValue == "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if (statusValue == "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+}
+
+// triggers task creation -- listening specifically for a "click" on a <btn> or a "type=submit" or a form where "enter" is pressed
 formEl.addEventListener("submit", taskFormHandler);
+// triggers on any button click within a any task element
 pageContentEl.addEventListener("click", taskButtonHandler);
+// triggers on the change of a <select> elements displayed option
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
