@@ -12,6 +12,8 @@ var taskIdCounter = 0;
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 // <ul> element holding all "tasks completed"
 var tasksCompletedEl = document.querySelector("#tasks-completed");
+// an array to hold all tasks-- converted to objects-- meant for localStorage
+var tasks = [];
 
 
 // creates task AND edits task
@@ -51,7 +53,8 @@ var taskFormHandler = function (event) {
     else {
         var taskDataObj = {
             name: taskNameInput,
-            type: taskTypeInput
+            type: taskTypeInput,
+            status: "to do"
         };
 
         createTaskEl(taskDataObj);
@@ -65,6 +68,16 @@ var completeEditTask = function(taskName, taskType, taskId){
     // set new values -- pass on the NAME & TYPE from the form in "edit mode" to the existing <li> task
     taskSelected.querySelector("h3.task-name").textContent = taskName;
     taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    // loop through tasks array and update task object with new content
+
+    for (var i = 0; i < tasks.length; i++){
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].name = taskName;
+            tasks[i].type = taskType;
+        }
+    }
+   
 
     alert("Task Updated");
 
@@ -99,6 +112,12 @@ var createTaskEl = function(taskDataObj) {
 
     // add entire list item to list
     tasksToDoEl.appendChild(listItemEl);
+
+    // add an "id" property to the taskDataObj OBJECT
+    taskDataObj.id = taskIdCounter;
+    // push current taskDataObj to the global "tasks" array
+    tasks.push(taskDataObj);
+  
 
     // increase task counter for next unique id
     taskIdCounter ++;
@@ -174,6 +193,20 @@ var deleteTask = function(taskId) {
 
     //console.log(taskSelected);
     taskSelected.remove();
+
+    // create new array to hold updated list of tasks
+    var updatedTaskArr = [];
+
+    // loop through current tasks
+    for (var i = 0; i < tasks.length; i++) {
+        // if tasks[i] doesn't match the value of taskId, let's keep that task and push it into the new array
+        if (tasks[i].id !== parseInt(taskId)) {
+            updatedTaskArr.push(tasks[i]);
+        }
+    }
+
+    // reassign tasks array to be the same as updatedTaskArr
+    tasks = updatedTaskArr
 }
 
 var editTask = function(taskId) {
@@ -217,6 +250,13 @@ var taskStatusChangeHandler = function(event) {
     else if (statusValue == "completed") {
         tasksCompletedEl.appendChild(taskSelected);
     }
+    // change the status of the task obj representation in the "tasks" array
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)){
+            tasks[i].status = statusValue;
+        }
+    }
+    console.log(tasks);
 }
 
 // triggers task creation -- listening specifically for a "click" on a <btn> or a "type=submit" or a form where "enter" is pressed
