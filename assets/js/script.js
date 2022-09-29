@@ -39,6 +39,7 @@ var taskFormHandler = function (event) {
 
     // returns TRUE or FALSE if the formEl does or doesn't have a "data-task-id" attribute
     var isEdit = formEl.hasAttribute("data-task-id");
+    console.log(isEdit);
     
     // all code below is taking the "submit" event and doing one of two things based on our hasAttribute conditional
 
@@ -208,6 +209,7 @@ var deleteTask = function(taskId) {
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr
 }
+
 
 var editTask = function(taskId) {
     console.log("editing task #" + taskId);
