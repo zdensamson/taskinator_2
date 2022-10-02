@@ -1,4 +1,4 @@
-// START ON 4.3.10
+// START ON 4.4.6
 
 // task name text field & task type drop down
 var formEl = document.querySelector("#task-form");
@@ -71,7 +71,6 @@ var completeEditTask = function(taskName, taskType, taskId){
     taskSelected.querySelector("span.task-type").textContent = taskType;
 
     // loop through tasks array and update task object with new content
-
     for (var i = 0; i < tasks.length; i++){
         if (tasks[i].id === parseInt(taskId)) {
             tasks[i].name = taskName;
@@ -79,8 +78,9 @@ var completeEditTask = function(taskName, taskType, taskId){
         }
     }
    
-
     alert("Task Updated");
+
+    saveTasks();
 
     // reset the form to take in new tasks from user
     formEl.removeAttribute("data-task-id");
@@ -118,7 +118,8 @@ var createTaskEl = function(taskDataObj) {
     taskDataObj.id = taskIdCounter;
     // push current taskDataObj to the global "tasks" array
     tasks.push(taskDataObj);
-  
+
+    saveTasks();
 
     // increase task counter for next unique id
     taskIdCounter ++;
@@ -171,7 +172,7 @@ var createTaskActions = function(taskId) {
 
 // a "controller" of sorts that is specifcally listening/looking for a "click" on ANY <btn> element with the CLASS .delete-btn OR .edit-btn
 var taskButtonHandler = function(event){
-    //console.log(event.target);
+    console.log(event.target);
     // get target element from event
     var targetEl = event.target;
 
@@ -208,9 +209,11 @@ var deleteTask = function(taskId) {
 
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr
+
+    saveTasks();
 }
 
-
+// simply used to pass NAME, TYPE, & ID to the formEl-- from here the taskFormHandler() function will recognize an ID exists and pass the final work onto completeEditTask()
 var editTask = function(taskId) {
     console.log("editing task #" + taskId);
 
@@ -258,8 +261,13 @@ var taskStatusChangeHandler = function(event) {
             tasks[i].status = statusValue;
         }
     }
-    console.log(tasks);
+    
+    saveTasks();
 }
+
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
 
 // triggers task creation -- listening specifically for a "click" on a <btn> or a "type=submit" or a form where "enter" is pressed
 formEl.addEventListener("submit", taskFormHandler);
