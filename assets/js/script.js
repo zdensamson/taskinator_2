@@ -269,9 +269,62 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+var loadTasks = function() {
+    // retrieve the Item "tasks" from localStorage
+    tasks = localStorage.getItem("tasks");
+    console.log(tasks);
+
+    if (tasks === null) {
+        tasks = [];
+    }
+    // convert the "tasks" string to an object 
+    tasks = JSON.parse(tasks);
+    console.log(tasks);
+
+    // iterate over "tasks" object and create elements to hold data
+    for(var i = 0; i < tasks.length; i++) {
+        tasks[i].id = taskIdCounter;
+
+        var listItemEl = document.createElement("li");
+        listItemEl.className = "task-item";
+        listItemEl.setAttribute("data-task-id", tasks[i].id)
+
+        var taskInfoEl = document.createElement("div");
+        taskInfoEl.classname = "task-info";
+        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
+
+        listItemEl.appendChild(taskInfoEl);
+
+        var taskActionsEl = createTaskActions(tasks[i].id);
+
+        listItemEl.appendChild(taskActionsEl);
+        console.log(listItemEl);
+
+        if(tasks[i].status == "to do"){
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
+            tasksToDoEl.appendChild(listItemEl)
+        }
+        else if(tasks[i].status == "in progress"){
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
+            tasksInProgressEl.appendChild(listItemEl);
+        }
+        else if (tasks[i].status == "completed"){
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
+            tasksCompletedEl.appendChild(listItemEl);
+        }
+
+        taskIdCounter ++;
+
+    }
+
+
+}
+
 // triggers task creation -- listening specifically for a "click" on a <btn> or a "type=submit" or a form where "enter" is pressed
 formEl.addEventListener("submit", taskFormHandler);
 // triggers on any button click within a any task element
 pageContentEl.addEventListener("click", taskButtonHandler);
 // triggers on the change of a <select> elements displayed option
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
