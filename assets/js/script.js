@@ -108,20 +108,36 @@ var createTaskEl = function(taskDataObj) {
 
     // calls createTaskActions() and passes in the current ID to the buttons
     // creates a <div> holding two buttons and appends it to dynamically generated <li> (listItemEl)
-    var taskActionsEl = createTaskActions(taskIdCounter, taskDataObj.status);
+    var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
 
     // add entire list item to list
-    if(taskDataObj.status == "to do"){
-        tasksToDoEl.appendChild(listItemEl);
-    } 
-    else if(taskDataObj.status == "in progress"){
-        tasksInProgressEl.appendChild(listItemEl);
-    } 
-    else {
-        tasksCompletedEl.appendChild(listItemEl);
+    // if(taskDataObj.status == "to do"){
+    //     tasksToDoEl.appendChild(listItemEl);
+    // } 
+    // else if(taskDataObj.status == "in progress"){
+    //     tasksInProgressEl.appendChild(listItemEl);
+    // } 
+    // else {
+    //     tasksCompletedEl.appendChild(listItemEl);
+    // }
+
+    switch (taskDataObj.status) {
+        case "to do":
+          taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
+          tasksToDoEl.append(listItemEl);
+          break;
+        case "in progress":
+          taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
+          tasksInProgressEl.append(listItemEl);
+          break;
+        case "completed":
+          taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
+          tasksCompletedEl.append(listItemEl);
+          break;
+        default:
+          console.log("Something went wrong!");
     }
-   
 
     // add an "id" property to the taskDataObj OBJECT
     taskDataObj.id = taskIdCounter;
@@ -135,7 +151,7 @@ var createTaskEl = function(taskDataObj) {
 };
 
 // creates edit/delete btn and select drop down for each listItemEl
-var createTaskActions = function(taskId, taskStatus) {
+var createTaskActions = function(taskId) {
     var actionContainerEl = document.createElement("div");
     actionContainerEl.className = "task-actions";
 
@@ -173,11 +189,11 @@ var createTaskActions = function(taskId, taskStatus) {
         // append to select
         statusSelectEl.appendChild(statusOptionEl);
     }
-    if(taskStatus){
-        // statusSelectEl.value = taskStatus;
-        statusSelectEl.text = taskStatus;
-        console.log(taskStatus);
-    }
+    // if(taskStatus){
+    //     // statusSelectEl.value = taskStatus;
+    //     statusSelectEl.text = taskStatus;
+    //     console.log(taskStatus);
+    // }
 
     actionContainerEl.appendChild(statusSelectEl);
     
